@@ -201,7 +201,7 @@ export const transferMoney = async (req, res) => {
                     message : "Insufficient Balance"
             })
         }
-        await prisma.$transaction(async (tx) => { //new here tx is transaction client and inside it you will write tx
+        await prisma.$transaction(async (tx) => { //new here tx is transaction client and inside it you will use tx
             const senderNewBalance = Number(senderAccount.balance) - amount;
            await tx.accounts.update({
                 where:{
@@ -230,3 +230,4 @@ return res.status(200).json({
         });
     }
 } 
+
