@@ -2,7 +2,8 @@ import express from "express";
 import { authMiddleware } from "../middleware/authMiddleware.js";
 import { createAccount,
         getAccounts,
-        depositMoney
+        depositMoney,
+        transferMoney
  } from "../controllers/accountController.js";
 const router=express.Router();
 

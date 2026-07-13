@@ -100,7 +100,6 @@ export const depositMoney = async (req,res) =>{
     }
 }
 
-
 export const withdrawMoney = async (req,res) => {
     try{
         const {account_number,amount}=req.body
@@ -152,3 +151,82 @@ export const withdrawMoney = async (req,res) => {
         }) 
     }
 }
+
+export const transferMoney = async (req, res) => {
+    try {
+        const {from_account,to_account,amount} = req.body
+         const senderAccount = await prisma.accounts.findUnique({
+            where : {
+                account_number : from_account //finding sender and receiver acc
+            }
+        })
+          const receiverAccount = await prisma.accounts.findUnique({
+            where : {
+                account_number : to_account
+            }
+        })
+        if(!senderAccount)
+        {
+             return res.status(404).json({  //checking whether sender exists 
+                message : "Sender Account not found"
+            })
+        }
+        if(!receiverAccount)
+        {
+             return res.status(404).json({
+                message : "Receiver Account not found"   //checking whether receiver exists 
+            })
+        }
+        if(from_account==to_account)
+        {
+             return res.status(403).json({   
+            message: "Forbidden"
+        });
+        }
+         if(req.user.id!=senderAccount.user_id)// ownership check authorization
+        {
+            return res.status(403).json({
+            message: "Forbidden"
+        });
+        }
+         if(amount<=0)
+        {
+            return res.status(400).json({
+                message : "Amount must be gretarer than 0"
+            })
+        }
+        if(Number(senderAccount.balance)<amount)  //Number we write because of PRISMA decimal type decimal is there not int for good maths we use Number
+        {
+             return res.status(400).json({ //400 for invalid request 
+                    message : "Insufficient Balance"
+            })
+        }
+        await prisma.$transaction(async (tx) => { //new here tx is transaction client and inside it you will write tx
+            const senderNewBalance = Number(senderAccount.balance) - amount;
+           await tx.accounts.update({
+                where:{
+                    account_number : from_account
+                },
+                data : {
+                    balance : senderNewBalance
+                }
+            })
+             const receiverNewBalance = Number(receiverAccount.balance) + amount;
+             await tx.accounts.update({
+                where : {
+                    account_number : to_account
+                },
+                data : {
+                    balance : receiverNewBalance
+                }
+             })
+});
+return res.status(200).json({
+    message: "Money transferred successfully"
+});
+    } catch (error) {
+        return res.status(500).json({
+            message: error.message
+        });
+    }
+} 
