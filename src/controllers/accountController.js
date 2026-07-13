@@ -103,8 +103,52 @@ export const depositMoney = async (req,res) =>{
 
 export const withdrawMoney = async (req,res) => {
     try{
-        
+        const {account_number,amount}=req.body
+        const account = await prisma.accounts.findUnique({
+            where : {
+                account_number
+            }
+        })
+        if(!account)
+        {
+            return res.status(404).json({
+                message : "Account not found"
+            })
+        }
+         if(req.user.id!=account.user_id)// ownership check authorization
+        {
+            return res.status(403).json({
+            message: "Forbidden"
+        });
+        }
+        if(amount<=0)
+        {
+            return res.status(400).json({
+                message : "Amount must be greater than zero"
+            })
+        }
+        if(account.balance < amount )
+        {
+            return res.status(400).json({ //400 for invalid request 
+                    message : "Insufficient Balance"
+            })
+        }
+          const newBalance = Number(account.balance) - amount;
+          const updatedAccount = await prisma.accounts.update({
+            where: {
+                account_number
+            },
+            data : {
+                balance : newBalance
+            }
+          })
+           return res.status(200).json({
+    message: "Money withdrawn successfully",
+    account: updatedAccount
+});
     }catch(error){
-
+        return res.status(500).json({
+              message: error.message
+        }) 
     }
 }
