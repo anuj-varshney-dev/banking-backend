@@ -12,6 +12,8 @@ model accounts {
   balance        Decimal? @default(0) @db.Decimal(12, 2)
   user_id        Int?
   users          users?   @relation(fields: [user_id], references: [id], onDelete: NoAction, onUpdate: NoAction)
+  sentTransactions     transactions[] @relation("Sender")
+  receivedTransactions transactions[] @relation("Receiver")
 }
 
 model users {
@@ -20,4 +22,18 @@ model users {
   email    String     @unique @db.VarChar(100)
   password String     @db.VarChar(255)
   accounts accounts[]
+}
+
+model transactions {
+  id               Int       @id @default(autoincrement())
+  type             String    @db.VarChar(20)
+  amount           Decimal   @default(0) @db.Decimal(12, 2)
+
+  from_account_id  Int?
+  to_account_id    Int?
+
+  fromAccount      accounts? @relation("Sender", fields: [from_account_id], references: [id])
+  toAccount        accounts? @relation("Receiver", fields: [to_account_id], references: [id])
+  
+  created_at DateTime @default(now())
 }
