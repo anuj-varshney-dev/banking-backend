@@ -10,3 +10,4 @@ const router=express.Router();
 router.post("/create", authMiddleware, createAccount);
 
 export default router;
+
