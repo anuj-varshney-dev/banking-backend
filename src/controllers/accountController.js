@@ -220,6 +220,23 @@ export const transferMoney = async (req, res) => {
                     balance : receiverNewBalance
                 }
              })
+             await tx.transactions.create({
+                data:{
+                    type : "TRANSFER",
+                    amount : amount ,
+                    from_account_id : senderAccount.id ,        //    senderAccount = {
+                    to_account_id : receiverAccount.id                                                    // id: 1,
+                                                                        // account_number: "1234567890",
+                                                                        // balance: 5000,
+                                                                        // user_id: 10
+                                                                                // }
+                }
+             })
+
+             
+
+
+
 });
 return res.status(200).json({
     message: "Money transferred successfully"
