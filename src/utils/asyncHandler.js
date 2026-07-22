@@ -1,0 +1,2 @@
+export const asyncHandler = (fn) => (req, res, next) =>
+    Promise.resolve(fn(req, res, next)).catch(next);   //reason for .catch(next) Express automatically skips all normal middleware and jumps to the Global Error Handler.

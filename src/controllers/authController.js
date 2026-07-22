@@ -1,14 +1,17 @@
 import prisma from "../config/prisma.js";
 import bcrypt from "bcrypt";
 import jwt from "jsonwebtoken";
+import { asyncHandler } from "../utils/asyncHandler.js";
 
-export const registerUser = async (req, res) => {
+
+//export const registerUser = async (req, res)
+ export const registerUser = asyncHandler(async (req, res)  => {
       const { name, email, password } = req.body; // inside bracket these are the JS vairiables built by me
       const hashedPassword = await bcrypt.hash(password, 10);
       const existingUser = await prisma.users.findUnique({
     where: {
         email
-    }
+    }    //  The controller itself is now being passed to asyncHandler. see the bracket between async and asyncHandler
 });
 if (existingUser) {
     return res.status(400).json({
@@ -26,9 +29,9 @@ return res.status(201).json({
     message: "User registered successfully",
     user
 });
-};
+});
 
-export const loginUser = async (req, res) => {
+export const loginUser = asyncHandler(async (req, res) => {
        const { email, password } = req.body;
     const user= await prisma.users.findUnique({
     where: {
@@ -64,8 +67,8 @@ return res.status(200).json({
     message: "Login successful",
     token : token
 });
-}
+})
 
-export const getProfile = async (req,res) => { //just for testing JWT 
+export const getProfile = asyncHandler(async (req,res) => { //just for testing JWT 
      res.json(req.user);
-}
+})
