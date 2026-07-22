@@ -1,5 +1,7 @@
 import express from "express";
 import { authMiddleware } from "../middleware/authMiddleware.js";
+import { validateMiddleware } from "../middleware/validateMiddleware.js";
+import { registerSchema } from "../validations/authValidation.js";
 import { registerUser, 
          loginUser,
          getProfile
