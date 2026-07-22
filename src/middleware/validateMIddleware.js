@@ -1,4 +1,4 @@
-export const validate = (schema) => (req, res, next) => {  //schema is a parameter
+export const validate = (schema) => (req, res, next) => {  //schema is a parameter  and variable name which is validate should be same as in  
         const result = schema.safeParse(req.body); //We use safeParse() because it doesn't throw an exception if validation fails.
         if(!result.success)
         {
