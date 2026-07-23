@@ -8,6 +8,7 @@ import { createAccount,
 const router=express.Router();
 
 router.post("/create", authMiddleware, createAccount);
+router.post("/deposit", authMiddleware, depositMoney);
 
 export default router;
 

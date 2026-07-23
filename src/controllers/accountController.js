@@ -1,4 +1,6 @@
 import { asyncHandler } from "../utils/asyncHandler.js";
+import ApiError from "../utils/apiError.js";
+import prisma from "../config/prisma.js";
 
 export const createAccount = asyncHandler(async (req, res) => {
     // try{
@@ -66,9 +68,10 @@ export const depositMoney = asyncHandler(async (req,res) =>{
         })
         if(!account)
         {
-            const error = new Error("Account not found");
-            error.statusCode = 404;
-            throw error;
+            // const error = new Error("Account not found");
+            // error.statusCode = 404;
+            // throw error;
+            throw new ApiError(404, "Account not found");
         }
         if(req.user.id!=account.user_id)// ownership check authorization
         {
