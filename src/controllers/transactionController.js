@@ -1,4 +1,5 @@
 import { asyncHandler } from "../utils/asyncHandler.js";
+import prisma from "../config/prisma.js";
 
 export const getTransactions = asyncHandler(async (req,res)=>{
     // try{
