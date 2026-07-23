@@ -22,22 +22,38 @@ const router = express.Router();
  *         application/json:
  *           schema:
  *             type: object
+ *             required:
+ *               - name
+ *               - email
+ *               - password
  *             properties:
  *               name:
  *                 type: string
+ *                 example: Anuj
  *               email:
  *                 type: string
+ *                 example: anuj@gmail.com
  *               password:
  *                 type: string
+ *                 example: "12345678"
  *     responses:
  *       201:
  *         description: User registered successfully
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 message:
+ *                   type: string
+ *                   example: User registered successfully
  */
 router.post(
     "/register",
     validate(registerSchema),
     registerUser
 );
+
 
 router.post(
     "/login",
