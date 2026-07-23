@@ -1,3 +1,5 @@
+import { asyncHandler } from "../utils/asyncHandler.js";
+
 export const getTransactions = asyncHandler(async (req,res)=>{
     // try{
                 const accounts = await prisma.accounts.findMany({

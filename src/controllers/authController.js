@@ -40,9 +40,9 @@ export const loginUser = asyncHandler(async (req, res) => {
 });
 if(!user)
 {
-    return res.status(401).json({
-        message: "Invalid email ",
-    })
+    const error = new Error("User not found");
+    error.statusCode = 401;
+    throw error;
 }
         const isMatch = await bcrypt.compare(
     password,
@@ -50,9 +50,9 @@ if(!user)
 );
 if(!isMatch)
 {
-    return res.status(401).json({
-        message : "Invalid email or password"
-    });
+     const error = new Error("Invalid email or password");
+    error.statusCode = 401;
+    throw error;
 }
 const token = jwt.sign(
     {

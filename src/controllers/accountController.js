@@ -1,3 +1,5 @@
+import { asyncHandler } from "../utils/asyncHandler.js";
+
 export const createAccount = asyncHandler(async (req, res) => {
     // try{
          let accountNumber,existingAccount;
@@ -64,21 +66,21 @@ export const depositMoney = asyncHandler(async (req,res) =>{
         })
         if(!account)
         {
-            return res.status(404).json({
-                message : "Account Not Found"
-            })
+            const error = new Error("Account not found");
+            error.statusCode = 404;
+            throw error;
         }
         if(req.user.id!=account.user_id)// ownership check authorization
         {
-            return res.status(403).json({
-            message: "Forbidden"
-        });
+            const error = new Error("Forbidden");
+            error.statusCode = 403;
+            throw error;
         }
         if(amount<=0)
         {
-            return res.status(400).json({
-                message : "Amount must be gretarer than 0"
-            })
+            const error = new Error("Amount must be greater than 0");
+            error.statusCode = 400;
+            throw error;
         }
         const newBalance = Number(account.balance) + amount;
         const updatedAccount = await prisma.accounts.update({
@@ -110,27 +112,27 @@ export const withdrawMoney = asyncHandler(async (req,res) => {
         })
         if(!account)
         {
-            return res.status(404).json({
-                message : "Account not found"
-            })
+             const error = new Error("Account not found");
+            error.statusCode = 404;
+            throw error;
         }
          if(req.user.id!=account.user_id)// ownership check authorization
         {
-            return res.status(403).json({
-            message: "Forbidden"
-        });
+            const error = new Error("Forbidden");
+            error.statusCode = 403;
+            throw error;
         }
         if(amount<=0)
         {
-            return res.status(400).json({
-                message : "Amount must be greater than zero"
-            })
+             const error = new Error("Amount must be greater than 0");
+            error.statusCode = 400;
+            throw error;
         }
         if(account.balance < amount )
         {
-            return res.status(400).json({ //400 for invalid request 
-                    message : "Insufficient Balance"
-            })
+            const error = new Error("Insufficient Balance"); //400 for invalid request
+            error.statusCode = 400;
+            throw error;
         }
           const newBalance = Number(account.balance) - amount;
           const updatedAccount = await prisma.accounts.update({
@@ -167,39 +169,39 @@ export const transferMoney = asyncHandler(async (req, res) => {
         })
         if(!senderAccount)
         {
-             return res.status(404).json({  //checking whether sender exists 
-                message : "Sender Account not found"
-            })
+              const error = new Error(" Sender account not found"); 
+            error.statusCode = 404;    //checking whether sender exists
+            throw error;
         }
         if(!receiverAccount)
         {
-             return res.status(404).json({
-                message : "Receiver Account not found"   //checking whether receiver exists 
-            })
+             const error = new Error(" Sender account not found"); 
+            error.statusCode = 404;    //checking whether receiver exists
+            throw error;
         }
         if(from_account==to_account)
         {
-             return res.status(403).json({   
-            message: "Forbidden"
-        });
+              const error = new Error("Forbidden"); 
+            error.statusCode = 403;    
+            throw error;
         }
          if(req.user.id!=senderAccount.user_id)// ownership check authorization
         {
-            return res.status(403).json({
-            message: "Forbidden"
-        });
+             const error = new Error("Forbidden"); 
+            error.statusCode = 403;    
+            throw error;
         }
          if(amount<=0)
         {
-            return res.status(400).json({
-                message : "Amount must be gretarer than 0"
-            })
+             const error = new Error("Amount must be greater than 0"); 
+            error.statusCode = 400;    
+            throw error;
         }
         if(Number(senderAccount.balance)<amount)  //Number we write because of PRISMA decimal type decimal is there not int for good maths we use Number
         {
-             return res.status(400).json({ //400 for invalid request 
-                    message : "Insufficient Balance"
-            })
+              const error = new Error("Insufficient Balance"); //400 for invalid request
+            error.statusCode = 400;    
+            throw error;
         }
         await prisma.$transaction(async (tx) => { //new here tx is transaction client and inside it you will use tx
             const senderNewBalance = Number(senderAccount.balance) - amount;
