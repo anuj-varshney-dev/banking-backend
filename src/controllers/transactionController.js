@@ -1,5 +1,5 @@
-export const getTransactions = async (req,res)=>{
-    try{
+export const getTransactions = asyncHandler(async (req,res)=>{
+    // try{
                 const accounts = await prisma.accounts.findMany({
             where :{
                 user_id : req.user.id
@@ -29,10 +29,10 @@ return res.status(200).json({
     message: "Transactions fetched successfully",
     transactions
 });
-    }catch(error)
-    {
-             return res.status(500).json({
-            message: error.message
-        });
-    }
-}
+    // }catch(error)
+    // {
+    //          return res.status(500).json({
+    //         message: error.message
+    //     });
+    // }
+})

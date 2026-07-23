@@ -1,5 +1,5 @@
-export const createAccount = async (req, res) => {
-    try{
+export const createAccount = asyncHandler(async (req, res) => {
+    // try{
          let accountNumber,existingAccount;
          const userId = req.user.id
         while(true)
@@ -24,15 +24,15 @@ export const createAccount = async (req, res) => {
     message: "New Account created successfully",
     account: newAccount
 });
-    }catch(error){
-        return res.status(500).json({
-            message: error.message
-        });
-    }
-};
+    // }catch(error){
+    //     return res.status(500).json({ // as now using asyncHandler
+    //         message: error.message
+    //     });
+    // }
+});
 
-export const getAccounts = async (req,res) => {
-    try{
+export const getAccounts = asyncHandler(async (req,res) => {
+    // try{
          const userId = req.user.id;
   const accounts = await prisma.accounts.findMany({
     where: {
@@ -43,15 +43,15 @@ export const getAccounts = async (req,res) => {
     message: "Accounts fetched successfully",
     accounts
 });
-    }catch(error){
-        return res.status(500).json({
-            message: error.message
-        });
-    }
-}
+    // }catch(error){
+    //     return res.status(500).json({
+    //         message: error.message
+    //     });
+    // }
+})
 
-export const depositMoney = async (req,res) =>{
-    try{
+export const depositMoney = asyncHandler(async (req,res) =>{
+    // try{
         const {account_number,amount} = req.body
         const account = await prisma.accounts.findUnique({
             where : {
@@ -93,15 +93,15 @@ export const depositMoney = async (req,res) =>{
     message: "Money deposited successfully",
     account: updatedAccount
 });
-    }catch(error){
-        return res.status(500).json({
-            message: error.message
-        });
-    }
-}
+    // }catch(error){
+    //     return res.status(500).json({
+    //         message: error.message
+    //     });
+    // }
+})
 
-export const withdrawMoney = async (req,res) => {
-    try{
+export const withdrawMoney = asyncHandler(async (req,res) => {
+    // try{
         const {account_number,amount}=req.body
         const account = await prisma.accounts.findUnique({
             where : {
@@ -145,15 +145,15 @@ export const withdrawMoney = async (req,res) => {
     message: "Money withdrawn successfully",
     account: updatedAccount
 });
-    }catch(error){
-        return res.status(500).json({
-              message: error.message
-        }) 
-    }
-}
+    // }catch(error){
+    //     return res.status(500).json({
+    //           message: error.message
+    //     }) 
+    // }
+})
 
-export const transferMoney = async (req, res) => {
-    try {
+export const transferMoney = asyncHandler(async (req, res) => {
+    // try {
         const {from_account,to_account,amount} = req.body
          const senderAccount = await prisma.accounts.findUnique({
             where : {
@@ -241,10 +241,10 @@ export const transferMoney = async (req, res) => {
 return res.status(200).json({
     message: "Money transferred successfully"
 });
-    } catch (error) {
-        return res.status(500).json({
-            message: error.message
-        });
-    }
-} 
+    // } catch (error) {
+    //     return res.status(500).json({
+    //         message: error.message
+    //     });
+    // }
+}) 
 
